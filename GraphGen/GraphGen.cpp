@@ -4,7 +4,6 @@
 //global vars
 bool debug = false;
 
-
 int main(int argc, const char* argv[])
 {
 	cxxopts::Options options("GraphGen", "Random Graph Generator");
