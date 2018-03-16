@@ -5,6 +5,26 @@
     {
       "Id": "da59c0bd-f2b7-41df-b611-38da083ab8b3",
       "Command": "-d"
+    },
+    {
+      "Id": "0700d84d-028a-42fb-8a9b-6fc2bfcf703b",
+      "Command": "--help"
+    },
+    {
+      "Id": "c5a6f397-537c-453e-88b1-683046655c0d",
+      "Command": "-n 5"
+    },
+    {
+      "Id": "13e51e9a-1ffc-4fa6-bb90-04a68a89042a",
+      "Command": "-f pajek"
+    },
+    {
+      "Id": "8008b8dd-24d3-4218-b0d4-c1cb96b5555b",
+      "Command": "-p 0.3"
+    },
+    {
+      "Id": "805d8ade-476b-41d6-8abf-3314586559c9",
+      "Command": "-t grid"
     }
   ]
 }
