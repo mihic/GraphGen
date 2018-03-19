@@ -1,4 +1,5 @@
 #include "stdafx.h" //precompiled header
+#include "Graph.hpp"
 
 enum OutputFormat {
   kPajek,
@@ -23,10 +24,14 @@ static std::map<std::string, OutputFormat> kOutputFormatTypeMap{
 };
 
 
+
 int kNumNodes;
 double kDensity;
+int kNumCenters;
 OutputFormat kOutFormat;
 GeneratorType kGenType;
+std::default_random_engine kRandomEngine;
+Graph generated_graph;
 bool kDebug = false;
 
 int main(int argc, const char* argv[]) {
@@ -37,8 +42,10 @@ int main(int argc, const char* argv[]) {
       ("d,debug", "Enable debugging")
       ("n,nodes", "Number of nodes, [int]", cxxopts::value<int>())
       ("f,format", "Output format type, [pajek,pmed]", cxxopts::value<std::string>())
-      ("p,density", "Density of edges, [double(0-1)]", cxxopts::value<double>())
+      ("p,density", "Density of edges, [double (0,1] ]", cxxopts::value<double>())
       ("t,type", "Graph type [random,grid,scalefree]", cxxopts::value<std::string>())
+      ("s,seed", "Random generator seed, [int]", cxxopts::value<int>())
+      ("k,centers", "Number of centers for pmed output, [int (1,n-1) ]")
       ;
 
     auto result = options.parse(argc, argv);
@@ -117,10 +124,55 @@ int main(int argc, const char* argv[]) {
       std::cerr << "Generator type not defined!" << std::endl;
       exit(2);
     }
+
+    if (result.count("seed")) {
+      int seed = result["seed"].as<int>();
+      kRandomEngine = std::default_random_engine(seed);
+      if (kDebug) {
+        std::cerr << "Seed: " << seed << std::endl;
+      }
+    }
+    else {
+      std::random_device r;
+      auto random_seed = r();
+      kRandomEngine = std::default_random_engine(random_seed);
+      if (kDebug) {
+        std::cerr << "Seed: " << random_seed << std::endl;
+      }
+    }
+    if (result.count("centers")) {
+      int kNumCenters = result["centers"].as<int>();
+      if (kNumCenters < 1 || kNumCenters >= kNumNodes) {
+        std::cerr << "centers must be a value in range (1,nodes-1) input=" << kNumCenters << std::endl;
+        exit(2);
+      }
+    }
+    else {
+      kNumCenters = kNumNodes / 3;
+    }
+    if (kDebug) {
+      std::cerr << "centers: " << kNumCenters << std::endl;
+    }
   }
   catch (const cxxopts::OptionException& e) {
     std::cout << "error parsing options: " << e.what() << std::endl;
     exit(1);
+  }
+
+  switch (kGenType) {
+  case kRandom:
+    generated_graph = RandomGraph(kNumNodes, kRandomEngine, kDensity,1,100);
+    break;
+  case kGrid:
+    generated_graph = Random2DGridGraph(kNumNodes, kRandomEngine, kDensity, 1, 100);
+  }
+
+  switch (kOutFormat) {
+  case kPajek:
+    generated_graph.output_pajek();
+    break;
+  case kPmed:
+    generated_graph.output_pmed(kNumCenters);
   }
 }
 
