@@ -7,6 +7,10 @@
       "Command": "-d"
     },
     {
+      "Id": "25f65ea6-aa5c-4f0d-be7a-dd97f486af34",
+      "Command": "-u"
+    },
+    {
       "Id": "88f330db-00fb-47dc-ba7b-9d567eaf7bfa",
       "Command": "-s 12"
     },
@@ -16,11 +20,15 @@
     },
     {
       "Id": "c5a6f397-537c-453e-88b1-683046655c0d",
-      "Command": "-n 8"
+      "Command": "-n 4"
     },
     {
       "Id": "13e51e9a-1ffc-4fa6-bb90-04a68a89042a",
       "Command": "-f pmed"
+    },
+    {
+      "Id": "2cb6bb35-14b5-463a-a862-edf6b56ebbb2",
+      "Command": "-t random"
     },
     {
       "Id": "8008b8dd-24d3-4218-b0d4-c1cb96b5555b",

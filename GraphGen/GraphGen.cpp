@@ -33,6 +33,7 @@ GeneratorType kGenType;
 std::default_random_engine kRandomEngine;
 Graph generated_graph;
 bool kDebug = false;
+bool kDirected = true;
 
 int main(int argc, const char* argv[]) {
   try {
@@ -46,12 +47,13 @@ int main(int argc, const char* argv[]) {
       ("t,type", "Graph type [random,grid,scalefree]", cxxopts::value<std::string>())
       ("s,seed", "Random generator seed, [int]", cxxopts::value<int>())
       ("k,centers", "Number of centers for pmed output, [int (1,n-1) ]")
+      ("u,undirected", "Generate undirected graphs")
       ;
 
     auto result = options.parse(argc, argv);
 
     if (result.count("help")) {
-      std::cout << options.help({""}) << std::endl;
+      std::cout << options.help({ "" }) << std::endl;
       exit(0);
     }
     if (result.count("debug")) {
@@ -153,6 +155,19 @@ int main(int argc, const char* argv[]) {
     if (kDebug) {
       std::cerr << "centers: " << kNumCenters << std::endl;
     }
+
+    if (result.count("undirected")) {
+      kDirected = false;
+    }
+    if (kDebug) {
+      if (kDirected) {
+        std::cerr << "undirected:false" << std::endl;
+      }
+      else {
+        std::cerr << "undirected:true" << std::endl;
+      }
+    }
+
   }
   catch (const cxxopts::OptionException& e) {
     std::cout << "error parsing options: " << e.what() << std::endl;
@@ -161,10 +176,10 @@ int main(int argc, const char* argv[]) {
 
   switch (kGenType) {
   case kRandom:
-    generated_graph = RandomGraph(kNumNodes, kRandomEngine, kDensity,1,100);
+    generated_graph = RandomGraph(kNumNodes, kRandomEngine, kDirected, kDensity, 1, 100);
     break;
   case kGrid:
-    generated_graph = Random2DGridGraph(kNumNodes, kRandomEngine, kDensity, 1, 100);
+    generated_graph = Random2DGridGraph(kNumNodes, kRandomEngine, kDirected, kDensity, 1, 100);
   }
 
   switch (kOutFormat) {
