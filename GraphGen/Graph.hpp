@@ -105,3 +105,30 @@ Graph Random2DGridGraph(int n, std::default_random_engine random_engine, bool di
   }
   return g;
 }
+
+Graph RandomScaleFreeGraph(int n, std::default_random_engine random_engine, int initial_nodes, double offset_exponent, int min_degree,int cmin,int cmax) {
+  std::uniform_int_distribution<int> r_int(cmin, cmax);
+  std::uniform_real_distribution<double> r_double(0, 1);
+  std::vector<int> neighbour_counts(n, 0);
+  Graph G(n);
+
+  //full graph from inital nodes
+  for (int i = 0; i < initial_nodes; ++i) {
+    for (int j = i; j < initial_nodes; ++j) {
+      G.add_edge(i, j, r_int(random_engine));
+      neighbour_counts[i]++;
+      neighbour_counts[j]++;
+    }
+  }
+
+  for (int i = initial_nodes; i < n; ++i) {
+    int curr_deg = 0;
+    while (curr_deg < min_degree) {
+      std::uniform_int_distribution<int> r_candidate(0, i-1);
+      int candidate_node = r_candidate(random_engine);
+      //TODO
+    }
+  }
+
+  return G;
+}

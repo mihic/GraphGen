@@ -180,6 +180,10 @@ int main(int argc, const char* argv[]) {
     break;
   case kGrid:
     generated_graph = Random2DGridGraph(kNumNodes, kRandomEngine, kDirected, kDensity, 1, 100);
+    break;
+  case kScaleFree:
+    generated_graph = RandomScaleFreeGraph(kNumNodes,kRandomEngine,3,1.0,1,1,100);
+    break;
   }
 
   switch (kOutFormat) {
