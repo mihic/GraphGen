@@ -20,7 +20,7 @@
     },
     {
       "Id": "c5a6f397-537c-453e-88b1-683046655c0d",
-      "Command": "-n 4"
+      "Command": "-n 500"
     },
     {
       "Id": "13e51e9a-1ffc-4fa6-bb90-04a68a89042a",
@@ -36,7 +36,11 @@
     },
     {
       "Id": "805d8ade-476b-41d6-8abf-3314586559c9",
-      "Command": "-t grid"
+      "Command": "-t scalefree"
+    },
+    {
+      "Id": "6627b920-8572-40ee-adf2-8186a00430cb",
+      "Command": "-f pajek"
     }
   ]
 }

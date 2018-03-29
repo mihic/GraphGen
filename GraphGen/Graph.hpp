@@ -110,23 +110,32 @@ Graph RandomScaleFreeGraph(int n, std::default_random_engine random_engine, int 
   std::uniform_int_distribution<int> r_int(cmin, cmax);
   std::uniform_real_distribution<double> r_double(0, 1);
   std::vector<int> neighbour_counts(n, 0);
+  int total_edges;
   Graph G(n);
 
   //full graph from inital nodes
   for (int i = 0; i < initial_nodes; ++i) {
-    for (int j = i; j < initial_nodes; ++j) {
+    for (int j = i+1; j < initial_nodes; ++j) {
       G.add_edge(i, j, r_int(random_engine));
       neighbour_counts[i]++;
       neighbour_counts[j]++;
+      total_edges += 2;
     }
   }
 
+  //preferential growth
   for (int i = initial_nodes; i < n; ++i) {
-    int curr_deg = 0;
-    while (curr_deg < min_degree) {
+    while (neighbour_counts[i] < min_degree) {
       std::uniform_int_distribution<int> r_candidate(0, i-1);
       int candidate_node = r_candidate(random_engine);
-      //TODO
+      double p = (double)neighbour_counts[candidate_node] / (double)total_edges;
+      p = std::pow(p, offset_exponent);
+      if (r_double(random_engine) < p) {
+        G.add_edge(i, candidate_node, r_int(random_engine));
+        neighbour_counts[i]++;
+        neighbour_counts[candidate_node]++;
+        total_edges += 2;
+      }
     }
   }
 
