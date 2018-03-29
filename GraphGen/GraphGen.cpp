@@ -53,8 +53,10 @@ int main(int argc, const char* argv[]) {
       ("s,seed", "Random generator seed, [int]", cxxopts::value<int>())
       ("k,centers", "Number of centers for pmed output, [int (1,n-1) ]")
       ("u,undirected", "Generate undirected graphs")
-      ("mincost","Minimum cost of edges", cxxopts::value<int>())
+      ("mincost", "Minimum cost of edges", cxxopts::value<int>())
       ("maxcost", "Maximum cost of edges", cxxopts::value<int>())
+      ;
+    options.add_options("scalefree")
       ("scalefree_initial_nodes", "Number of inital nodes in graph [int]", cxxopts::value<int>())
       ("scalefree_min_degree", "Minimum degree of new nodes [int]", cxxopts::value<int>())
       ("scalefree_offset_exponent", "Offset exponent applied to the probability of new edges [double]", cxxopts::value<double>())
@@ -63,7 +65,7 @@ int main(int argc, const char* argv[]) {
 
     //Print help
     if (result.count("help")) {
-      std::cout << options.help({ "" }) << std::endl;
+      std::cout << options.help({ "","scalefree" }) << std::endl;
       exit(0);
     }
     if (result.count("debug")) {
@@ -196,8 +198,8 @@ int main(int argc, const char* argv[]) {
       kMaxCost = result["maxcost"].as<int>();
     }
     if (kDebug) {
-      std::cout << "mincost: " << kMinCost << std::endl;
-      std::cout << "maxcost: " << kMaxCost << std::endl;
+      std::cerr << "mincost: " << kMinCost << std::endl;
+      std::cerr << "maxcost: " << kMaxCost << std::endl;
     }
 
 
@@ -205,23 +207,31 @@ int main(int argc, const char* argv[]) {
     if (kGenType == kScaleFree) {
       if (result.count("scalefree_initial_nodes")) {
         kScaleFreeInitialNodes = result["scalefree_initial_nodes"].as<int>();
+        if (kScaleFreeInitialNodes >= kNumNodes || kScaleFreeInitialNodes<1) {
+          std::cerr << "Number of initial nodes must be in range [1,n), input="<< kScaleFreeInitialNodes << std::endl;
+          exit(2);
+        }
       }
       if (result.count("scalefree_min_degree")) {
         kScaleFreeMinDegree = result["scalefree_min_degree"].as<int>();
+        if (kScaleFreeMinDegree > kScaleFreeInitialNodes || kScaleFreeMinDegree<1) {
+          std::cerr << "Minimum degree must be in range [1,scalefree_initial_nodes], input=" << kScaleFreeMinDegree << std::endl;
+          exit(2);
+        }
       }     
       if (result.count("scalefree_offset_exponent")) {
         kScaleFreeOffsetExponent = result["scalefree_offset_exponent"].as<double>();
       }
       if (kDebug) {
-        std::cout << "scalefree_initial_nodes: " << kScaleFreeInitialNodes << std::endl;
-        std::cout << "scalefree_min_degree: " << kScaleFreeMinDegree << std::endl;
-        std::cout << "scalefree_offset_exponent: " << kScaleFreeOffsetExponent << std::endl;
+        std::cerr << "scalefree_initial_nodes: " << kScaleFreeInitialNodes << std::endl;
+        std::cerr << "scalefree_min_degree: " << kScaleFreeMinDegree << std::endl;
+        std::cerr << "scalefree_offset_exponent: " << kScaleFreeOffsetExponent << std::endl;
       }
     }
 
   }
   catch (const cxxopts::OptionException& e) {
-    std::cout << "error parsing options: " << e.what() << std::endl;
+    std::cerr << "error parsing options: " << e.what() << std::endl;
     exit(1);
   }
 

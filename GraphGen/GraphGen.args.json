@@ -53,6 +53,18 @@
     {
       "Id": "6627b920-8572-40ee-adf2-8186a00430cb",
       "Command": "-f pajek"
+    },
+    {
+      "Id": "8bd3b00f-b62c-40ca-a5d3-37c44126f1bf",
+      "Command": "--scalefree_initial_nodes 2"
+    },
+    {
+      "Id": "87506b38-8a52-4f21-80a4-f4a5747eb04a",
+      "Command": "--scalefree_offset_exponent 1.3"
+    },
+    {
+      "Id": "b2c8cefe-e6d0-40da-837c-ef594f3663d1",
+      "Command": "--scalefree_min_degree 2"
     }
   ]
 }
