@@ -20,19 +20,31 @@
     },
     {
       "Id": "c5a6f397-537c-453e-88b1-683046655c0d",
-      "Command": "-n 500"
+      "Command": "-n 5"
     },
     {
       "Id": "13e51e9a-1ffc-4fa6-bb90-04a68a89042a",
       "Command": "-f pmed"
     },
     {
+      "Id": "5c3f150b-398b-4c42-abd9-8517ac7e9591",
+      "Command": "--mincost 3"
+    },
+    {
       "Id": "2cb6bb35-14b5-463a-a862-edf6b56ebbb2",
       "Command": "-t random"
     },
     {
+      "Id": "ec8b6d1a-5055-4352-b24b-be50147aa906",
+      "Command": "--maxcost 5"
+    },
+    {
       "Id": "8008b8dd-24d3-4218-b0d4-c1cb96b5555b",
       "Command": "-p 1"
+    },
+    {
+      "Id": "1f941348-5ad0-44a8-95e4-3b3f47f39b80",
+      "Command": "-t grid"
     },
     {
       "Id": "805d8ade-476b-41d6-8abf-3314586559c9",
