@@ -51,7 +51,7 @@ int main(int argc, const char* argv[]) {
       ("p,density", "Density of edges, [double (0,1] ]", cxxopts::value<double>())
       ("t,type", "Graph type [random,grid,scalefree]", cxxopts::value<std::string>())
       ("s,seed", "Random generator seed, [int]", cxxopts::value<int>())
-      ("k,centers", "Number of centers for pmed output, [int (1,n-1) ]")
+      ("k,centers", "Number of centers for pmed output, [int (1,n-1) ]", cxxopts::value<int>())
       ("u,undirected", "Generate undirected graphs")
       ("mincost", "Minimum cost of edges", cxxopts::value<int>())
       ("maxcost", "Maximum cost of edges", cxxopts::value<int>())
@@ -163,7 +163,7 @@ int main(int argc, const char* argv[]) {
 
     //Number of centers
     if (result.count("centers")) {
-      int kNumCenters = result["centers"].as<int>();
+      kNumCenters = result["centers"].as<int>();
       if (kNumCenters < 1 || kNumCenters >= kNumNodes) {
         std::cerr << "centers must be a value in range (1,nodes-1) input=" << kNumCenters << std::endl;
         exit(2);
