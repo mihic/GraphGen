@@ -35,6 +35,7 @@ public:
   }
 };
 
+
 Graph RandomGraph(int n, std::default_random_engine random_engine, bool directed, double density, int cmin, int cmax) {
   Graph G(n);
   std::uniform_int_distribution<int> r_int(cmin, cmax);
@@ -51,6 +52,53 @@ Graph RandomGraph(int n, std::default_random_engine random_engine, bool directed
     for (; j < n; ++j) {
       if (r_double(random_engine) < density) {
         G.add_edge(i, j, r_int(random_engine));
+      }
+    }
+  }
+  return G;
+}
+
+Graph SimpleConnectedRandomGraph(int n, std::default_random_engine random_engine, double density, int cmin, int cmax) {
+  std::vector<bool> AdjMatrix(n*n);
+  int num_edges = 0;
+  std::uniform_int_distribution<int> r_weight(cmin, cmax);
+  std::set<int> T;
+  std::set<int> S;
+  std::uniform_int_distribution<int> r_node(0, n - 1);
+  int current_node = r_node(random_engine);
+  T.emplace(current_node);
+  for (int i = 0; i < n; ++i) {
+    if (i != current_node) {
+      S.emplace(i);
+    }
+  }
+
+  while (!S.empty()) {
+    int neighbour_node = r_node(random_engine);
+    if (T.find(neighbour_node) == T.end()) {
+      AdjMatrix[n*current_node + neighbour_node] = true;
+      AdjMatrix[n*neighbour_node + current_node] = true;
+      num_edges++;
+      S.erase(neighbour_node);
+      T.emplace(neighbour_node);
+    }
+    current_node = neighbour_node;
+  }
+  int wanted_nodes = int(density * n * (n - 1) / 2);
+  while (num_edges < wanted_nodes) {
+    int a = r_node(random_engine);
+    int b = r_node(random_engine);
+    if (!AdjMatrix[n*a + b]) {
+      AdjMatrix[n*a + b] = true;
+      AdjMatrix[n*b + a] = true;
+      num_edges++;
+    }
+  }
+  Graph G(n);
+  for (int i = 0; i < n; ++i) {
+    for (int j = i + 1; j < n; ++j) {
+      if (AdjMatrix[n*i + j]) {
+        G.add_edge(i, j, r_weight(random_engine));
       }
     }
   }
@@ -106,7 +154,7 @@ Graph Random2DGridGraph(int n, std::default_random_engine random_engine, bool di
   return g;
 }
 
-Graph RandomScaleFreeGraph(int n, std::default_random_engine random_engine, int initial_nodes, double offset_exponent, int min_degree,int cmin,int cmax) {
+Graph RandomScaleFreeGraph(int n, std::default_random_engine random_engine, int initial_nodes, double offset_exponent, int min_degree, int cmin, int cmax) {
   std::uniform_int_distribution<int> r_int(cmin, cmax);
   std::uniform_real_distribution<double> r_double(0, 1);
   std::vector<int> neighbour_counts(n, 0);
@@ -115,7 +163,7 @@ Graph RandomScaleFreeGraph(int n, std::default_random_engine random_engine, int 
 
   //full graph from inital nodes
   for (int i = 0; i < initial_nodes; ++i) {
-    for (int j = i+1; j < initial_nodes; ++j) {
+    for (int j = i + 1; j < initial_nodes; ++j) {
       G.add_edge(i, j, r_int(random_engine));
       neighbour_counts[i]++;
       neighbour_counts[j]++;
@@ -126,7 +174,7 @@ Graph RandomScaleFreeGraph(int n, std::default_random_engine random_engine, int 
   //preferential growth
   for (int i = initial_nodes; i < n; ++i) {
     while (neighbour_counts[i] < min_degree) {
-      std::uniform_int_distribution<int> r_candidate(0, i-1);
+      std::uniform_int_distribution<int> r_candidate(0, i - 1);
       int candidate_node = r_candidate(random_engine);
       double p = (double)neighbour_counts[candidate_node] / (double)total_edges;
       p = std::pow(p, offset_exponent);

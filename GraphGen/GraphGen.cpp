@@ -7,12 +7,14 @@ enum OutputFormat {
 };
 
 enum GeneratorType {
+  kSimpleConnectedRandom,
   kRandom,
   kGrid,
   kScaleFree
 };
 
 static std::map<std::string, GeneratorType> kGeneratorTypeMap{
+  {"csrandom",  kSimpleConnectedRandom},
   {"random",    kRandom},
   {"grid",      kGrid},
   {"scalefree", kScaleFree}
@@ -49,7 +51,7 @@ int main(int argc, const char* argv[]) {
       ("n,nodes", "Number of nodes, [int]", cxxopts::value<int>())
       ("f,format", "Output format type, [pajek,pmed]", cxxopts::value<std::string>())
       ("p,density", "Density of edges, [double (0,1] ]", cxxopts::value<double>())
-      ("t,type", "Graph type [random,grid,scalefree]", cxxopts::value<std::string>())
+      ("t,type", "Graph type [random,csrandom,grid,scalefree]", cxxopts::value<std::string>())
       ("s,seed", "Random generator seed, [int]", cxxopts::value<int>())
       ("k,centers", "Number of centers for pmed output, [int (1,n-1) ]", cxxopts::value<int>())
       ("u,undirected", "Generate undirected graphs")
@@ -207,18 +209,18 @@ int main(int argc, const char* argv[]) {
     if (kGenType == kScaleFree) {
       if (result.count("scalefree_initial_nodes")) {
         kScaleFreeInitialNodes = result["scalefree_initial_nodes"].as<int>();
-        if (kScaleFreeInitialNodes >= kNumNodes || kScaleFreeInitialNodes<1) {
-          std::cerr << "Number of initial nodes must be in range [1,n), input="<< kScaleFreeInitialNodes << std::endl;
+        if (kScaleFreeInitialNodes >= kNumNodes || kScaleFreeInitialNodes < 1) {
+          std::cerr << "Number of initial nodes must be in range [1,n), input=" << kScaleFreeInitialNodes << std::endl;
           exit(2);
         }
       }
       if (result.count("scalefree_min_degree")) {
         kScaleFreeMinDegree = result["scalefree_min_degree"].as<int>();
-        if (kScaleFreeMinDegree > kScaleFreeInitialNodes || kScaleFreeMinDegree<1) {
+        if (kScaleFreeMinDegree > kScaleFreeInitialNodes || kScaleFreeMinDegree < 1) {
           std::cerr << "Minimum degree must be in range [1,scalefree_initial_nodes], input=" << kScaleFreeMinDegree << std::endl;
           exit(2);
         }
-      }     
+      }
       if (result.count("scalefree_offset_exponent")) {
         kScaleFreeOffsetExponent = result["scalefree_offset_exponent"].as<double>();
       }
@@ -236,6 +238,9 @@ int main(int argc, const char* argv[]) {
   }
 
   switch (kGenType) {
+  case kSimpleConnectedRandom:
+    generated_graph = SimpleConnectedRandomGraph(kNumNodes, kRandomEngine, kDensity, kMinCost, kMaxCost);
+    break;
   case kRandom:
     generated_graph = RandomGraph(kNumNodes, kRandomEngine, kDirected, kDensity, kMinCost, kMaxCost);
     break;
