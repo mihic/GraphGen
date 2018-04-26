@@ -84,11 +84,11 @@ Graph SimpleConnectedRandomGraph(int n, std::default_random_engine random_engine
     }
     current_node = neighbour_node;
   }
-  int wanted_nodes = int(density * n * (n - 1) / 2);
-  while (num_edges < wanted_nodes) {
+  int wanted_edges = int(density * n * (n - 1) / 2);
+  while (num_edges < wanted_edges) {
     int a = r_node(random_engine);
     int b = r_node(random_engine);
-    if (!AdjMatrix[n*a + b]) {
+    if (a!=b && !AdjMatrix[n*a + b]) {
       AdjMatrix[n*a + b] = true;
       AdjMatrix[n*b + a] = true;
       num_edges++;
